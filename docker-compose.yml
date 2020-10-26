@@ -39,5 +39,7 @@ services:
     depends_on:
       database:
         condition: service_started
+    environment:
+      - GRAPHQL_ENDPOINT=http://od-graphql:5000/graphql
     ports:
       - "80:80"
