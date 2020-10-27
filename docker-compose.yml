@@ -37,7 +37,7 @@ services:
     container_name: od-proxy
     image: docker.pkg.github.com/open-discourse/open-discourse/proxy:latest
     depends_on:
-      database:
+      graphql:
         condition: service_started
     environment:
       - GRAPHQL_ENDPOINT=http://od-graphql:5000/graphql
