@@ -41,5 +41,6 @@ services:
         condition: service_started
     environment:
       - GRAPHQL_ENDPOINT=http://od-graphql:5000/graphql
+      - CACHE_EXPIRATION=1000
     ports:
       - "80:80"
