@@ -49,7 +49,7 @@ services:
     container_name: od-frontend
     image: docker.pkg.github.com/open-discourse/open-discourse/frontend:latest
     depends_on:
-      frontend:
+      proxy:
         condition: service_started
     environment:
       - GRAPHQL_ENDPOINT=http://od-proxy:5300
