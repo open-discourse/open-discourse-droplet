@@ -27,4 +27,5 @@ jobs:
             docker pull docker.pkg.github.com/open-discourse/open-discourse/database:latest
             docker pull docker.pkg.github.com/open-discourse/open-discourse/graphql:latest
             docker pull docker.pkg.github.com/open-discourse/open-discourse/proxy:latest
+            docker pull docker.pkg.github.com/open-discourse/open-discourse/frontend:latest
             docker-compose up -d
