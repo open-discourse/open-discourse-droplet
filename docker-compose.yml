@@ -52,6 +52,6 @@ services:
       proxy:
         condition: service_started
     environment:
-      - GRAPHQL_ENDPOINT=http://od-proxy:5300
+      - PROXY_ENDPOINT=http://od-proxy:5300
     ports:
       - "80:80"
