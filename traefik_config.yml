@@ -6,7 +6,7 @@ http:
         permanent: false
     redirect-ip:
       redirectRegex:
-        regex: "^https?://67\\.207\\.79\\.172\/(.*)"
+        regex: "^https?://67\\.207\\.79\\.172/(.*)"
         replacement: "http://api.opendiscourse.de/${1}"
 
   routers:
