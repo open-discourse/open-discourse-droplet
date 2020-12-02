@@ -1,15 +1,26 @@
-# http:
-#   middlewares:
-#     redirect-ip:
-#       redirectRegex:
-#         regex: "^https?://67\\.207\\.79\\.172\/(.*)"
-#         replacement: "http://api.opendiscourse.de/${1}"
+http:
+  middlewares:
+    redirect-https:
+      redirectscheme:
+        scheme: https
+        permanent: false
+    redirect-ip:
+      redirectRegex:
+        regex: "^https?://67\\.207\\.79\\.172\/(.*)"
+        replacement: "http://api.opendiscourse.de/${1}"
 
-#   routers:
-#     redirect-ip-router:
-#       rule: "Host(`67.207.79.172`)"
-#       service: noop@internal
-#       entrypoints:
-#         - web
-#       middlewares:
-#         - redirect-ip
+  routers:
+    redirect-https-router:
+      rule: "Host(`api.opendiscourse.de`)"
+      service: noop@internal
+      entrypoints:
+        - web
+      middlewares:
+        - redirect-https
+    redirect-ip-router:
+      rule: "Host(`67.207.79.172`)"
+      service: noop@internal
+      entrypoints:
+        - web
+      middlewares:
+        - redirect-ip
