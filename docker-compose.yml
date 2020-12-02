@@ -18,8 +18,10 @@ services:
 
       - --providers.docker=true
       - --providers.docker.exposedbydefault=false
+      - --entrypoints.web-secure.address=:443
       - --entrypoints.web-proxy.address=:5300
       - --certificatesresolvers.mytlschallenge.acme.tlschallenge=true
+      - --certificatesresolvers.mytlschallenge.acme.tlschallenge.entrypoint=web-secure
       - --certificatesresolvers.mytlschallenge.acme.email=oliver.franke@limebit.de
       - --certificatesresolvers.mytlschallenge.acme.storage=/letsencrypt/acme.json
       - --certificatesresolvers.mytlschallenge.acme.caServer=https://acme-staging-v02.api.letsencrypt.org/directory
