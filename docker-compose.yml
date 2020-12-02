@@ -5,6 +5,7 @@ services:
     image: traefik:v2.3
     ports:
       - "5300:5300"
+      - "443:443"
       - "8080:8080"
     volumes:
       - ./letsencrypt:/letsencrypt
@@ -17,7 +18,7 @@ services:
 
       - --providers.docker=true
       - --providers.docker.exposedbydefault=false
-      - --entrypoints.od-proxy.address=:5300
+      - --entrypoints.web-proxy.address=:5300
       - --certificatesresolvers.mytlschallenge.acme.tlschallenge=true
       - --certificatesresolvers.mytlschallenge.acme.email=oliver.franke@limebit.de
       - --certificatesresolvers.mytlschallenge.acme.storage=/letsencrypt/acme.json
@@ -69,7 +70,7 @@ services:
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.proxy.rule=Host(`api.opendiscourse.de`)"
-      - "traefik.http.routers.proxy.entrypoints=od-proxy"
+      - "traefik.http.routers.proxy.entrypoints=web-proxy"
       - "traefik.http.routers.proxy.tls.certresolver=mytlschallenge"
 
   frontend:
