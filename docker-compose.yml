@@ -10,6 +10,11 @@ services:
       - ./letsencrypt:/letsencrypt
       - /var/run/docker.sock:/var/run/docker.sock
     command:
+      - --api.insecure=true
+      - --api.dashboard=true
+      - --api.debug=true
+      - --log.level=DEBUG
+
       - --providers.docker=true
       - --providers.docker.exposedbydefault=false
       - --entrypoints.od-proxy.address=:5300
@@ -59,8 +64,8 @@ services:
     environment:
       - GRAPHQL_ENDPOINT=http://od-graphql:5000/graphql
       - CACHE_EXPIRATION=100000
-    ports:
-      - "5300:5300"
+    # ports:
+    #   - "5300:5300"
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.proxy.rule=Host(`api.opendiscourse.de`)"
