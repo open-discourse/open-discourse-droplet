@@ -7,18 +7,21 @@ services:
       - "80:80"
       - "443:443"
       - "5300:5300"
-      # - "8080:8080"
+      - "8080:8080"
     volumes:
       - ./letsencrypt:/letsencrypt
+      - ./traefik_config.yml:/traefik_config.yml
       - /var/run/docker.sock:/var/run/docker.sock
     command:
-      # - --api.insecure=true
-      # - --api.dashboard=true
-      # - --api.debug=true
-      # - --log.level=DEBUG
+      - --api.insecure=true
+      - --api.dashboard=true
+      - --api.debug=true
+      - --log.level=DEBUG
       
       - --providers.docker=true
       - --providers.docker.exposedbydefault=false
+      - --providers.file.filename=/traefik_config.yml
+      - --providers.file.watch=true
       - --entrypoints.web.address=:80
       - --entrypoints.web-secure.address=:443
       - --entrypoints.web-proxy.address=:5300
