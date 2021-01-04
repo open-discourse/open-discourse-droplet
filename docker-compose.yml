@@ -83,7 +83,7 @@ services:
       proxy:
         condition: service_started
     environment:
-      - PROXY_ENDPOINT=http://od-proxy:5300
+      - PROXY_ENDPOINT=https://api.opendiscourse.de:5300
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.frontend.rule=Host(`api.opendiscourse.de`)"
