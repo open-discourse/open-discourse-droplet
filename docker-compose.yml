@@ -70,6 +70,7 @@ services:
     environment:
       - GRAPHQL_ENDPOINT=http://od-graphql:5000/graphql
       - CACHE_EXPIRATION=100000
+      - QUERY_LIMIT=100
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.proxy.rule=Host(`api.opendiscourse.de`)"
