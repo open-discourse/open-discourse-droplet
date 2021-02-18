@@ -24,4 +24,4 @@ jobs:
             cd open-discourse-droplet
             docker-compose down
             git pull
-            docker-compose up -d
+            docker-compose up --env-file ./.env -d
