@@ -33,7 +33,7 @@ services:
 
   database:
     container_name: od-database
-    image: docker.pkg.github.com/open-discourse/open-discourse/database:latest
+    image: docker.pkg.github.com/open-discourse/open-discourse/database:development
     ports:
       - "5432:5432"
     healthcheck:
@@ -98,7 +98,7 @@ services:
 
   ldaendpoint:
     container_name: od-ldaendpoint
-    image: docker.pkg.github.com/open-discourse/open-discourse/ldaendpoint:latest
+    image: docker.pkg.github.com/open-discourse/open-discourse/ldaendpoint:development
     depends_on:
       database:
         condition: service_healthy
