@@ -9,7 +9,6 @@ services:
       - "443:443"
       - "5300:5300"
       - "5400:5400"
-      - "8080:8080"
     volumes:
       - ./letsencrypt:/letsencrypt
       - ./traefik_config.yml:/traefik_config.yml
@@ -97,6 +96,7 @@ services:
       - ENDPOINT=${ENDPOINT}
       - POSTGRES_DB_HOST=database
       - POSTGRES_PERSISTENT_DB_HOST=persistent_database
+      - POSTGRES_PERSISTENT_DB_PORT=5432
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.proxy.rule=Host(`api.opendiscourse.de`)"
