@@ -132,7 +132,7 @@ services:
       - SHORT_DOMAIN_SCHEMA=https
       - GEOLITE_LICENSE_KEY=${GEOLITE}
       - DB_DRIVER=postgres
-      - DB_PORT=2345
+      - DB_PORT=5432
       - DB_USER=postgres
       - DB_PASSWORD=postgres
       - DB_HOST=persistent_database
