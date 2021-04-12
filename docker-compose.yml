@@ -84,6 +84,8 @@ services:
     depends_on:
       graphql:
         condition: service_started
+      persistent_database:
+        condition: service_healthy
     environment:
       - GRAPHQL_ENDPOINT=http://od-graphql:5000/graphql
       - CACHE_EXPIRATION=100000
@@ -119,6 +121,9 @@ services:
   shlink:
     container_name: od-shlink
     image: shlinkio/shlink:stable
+    depends_on:
+      persistent_database:
+        condition: service_healthy
     environment:
       - SHORT_DOMAIN_HOST=api.opendiscourse.de
       - SHORT_DOMAIN_SCHEMA=https
