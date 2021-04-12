@@ -52,6 +52,7 @@ services:
       - "2345:5432"
     volumes:
       - ./persistent_database.sql:/persistent_database.sql
+      - ./persistent_data:/var/lib/postgresql/data
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U postgres"]
       interval: 5s
@@ -94,6 +95,7 @@ services:
       - ACCESS_KEY=${ACCESS_KEY}
       - SECRET_KEY=${SECRET_KEY}
       - ENDPOINT=${ENDPOINT}
+      - POSTGRES_DB_HOST=database
       - POSTGRES_PERSISTENT_DB_HOST=persistent_database
     labels:
       - "traefik.enable=true"
