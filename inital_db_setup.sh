@@ -1,0 +1,2 @@
+docker exec -it od-persistent-database psql -U postgres -c "CREATE DATABASE open_discourse"
+docker exec -it od-persistent-database psql -h localhost -d open_discourse -U postgres -f /persistent_database.sql

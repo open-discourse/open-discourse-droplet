@@ -14,8 +14,6 @@ services:
       - ./traefik_config.yml:/traefik_config.yml
       - /var/run/docker.sock:/var/run/docker.sock
     command:
-      - --api.insecure=true
-      - --api.dashboard=true
       # - --api.debug=true
       # - --log.level=DEBUG
       
@@ -24,9 +22,9 @@ services:
       - --providers.file.filename=/traefik_config.yml
       - --providers.file.watch=true
       - --entrypoints.web.address=:80
-      - --entrypoints.web-secure.address=:443
       - --entrypoints.web-proxy.address=:5300
       - --entrypoints.web-ldaendpoint.address=:5400
+      - --entrypoints.web-shlink.address=:443
       - --certificatesresolvers.mytlschallenge.acme.tlschallenge=true
       - --certificatesresolvers.mytlschallenge.acme.email=oliver.franke@limebit.de
       - --certificatesresolvers.mytlschallenge.acme.storage=/letsencrypt/acme.json
@@ -36,6 +34,23 @@ services:
     image: docker.pkg.github.com/open-discourse/open-discourse/database:development
     ports:
       - "5432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_DB=postgres
+      - POSTGRES_PASSWORD=postgres
+
+  persistent_database:
+    container_name: od-persistent-database
+    image: postgres:12
+    ports:
+      - "2345:5432"
+    volumes:
+      - ./persistent_database.sql:/persistent_database.sql
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U postgres"]
       interval: 5s
@@ -76,25 +91,12 @@ services:
       - ACCESS_KEY=${ACCESS_KEY}
       - SECRET_KEY=${SECRET_KEY}
       - ENDPOINT=${ENDPOINT}
+      - POSTGRES_PERSISTENT_DB_HOST=persistent_database
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.proxy.rule=Host(`api.opendiscourse.de`)"
       - "traefik.http.routers.proxy.entrypoints=web-proxy"
       - "traefik.http.routers.proxy.tls.certresolver=mytlschallenge"
-
-  frontend:
-    container_name: od-frontend
-    image: docker.pkg.github.com/open-discourse/open-discourse/frontend:latest
-    depends_on:
-      proxy:
-        condition: service_started
-    environment:
-      - PROXY_ENDPOINT=https://api.opendiscourse.de:5300
-    labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.frontend.rule=Host(`api.opendiscourse.de`)"
-      - "traefik.http.routers.frontend.entrypoints=web-secure"
-      - "traefik.http.routers.frontend.tls.certresolver=mytlschallenge"
 
   ldaendpoint:
     container_name: od-ldaendpoint
@@ -113,3 +115,21 @@ services:
       - "traefik.http.routers.ldaendpoint.rule=Host(`api.opendiscourse.de`)"
       - "traefik.http.routers.ldaendpoint.entrypoints=web-ldaendpoint"
       - "traefik.http.routers.ldaendpoint.tls.certresolver=mytlschallenge"
+
+  shlink:
+    container_name: od-shlink
+    image: shlinkio/shlink:stable
+    environment:
+      - SHORT_DOMAIN_HOST=api.opendiscourse.de
+      - SHORT_DOMAIN_SCHEMA=https
+      - GEOLITE_LICENSE_KEY=${GEOLITE}
+      - DB_DRIVER=postgres
+      - DB_PORT=2345
+      - DB_USER=postgres
+      - DB_PASSWORD=postgres
+      - DB_HOST=persistent_database
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.shlink.rule=Host(`api.opendiscourse.de`)"
+      - "traefik.http.routers.shlink.entrypoints=web-shlink"
+      - "traefik.http.routers.shlink.tls.certresolver=mytlschallenge"
