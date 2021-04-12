@@ -2,6 +2,7 @@ version: "2.1"
 
 services:
   traefik:
+    container_name: od-traefik
     image: traefik:v2.3
     ports:
       - "80:80"
