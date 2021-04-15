@@ -8,7 +8,6 @@ services:
       - "80:80"
       - "443:443"
       - "5300:5300"
-      - "5400:5400"
     volumes:
       - ./letsencrypt:/letsencrypt
       - ./traefik_config.yml:/traefik_config.yml
@@ -23,7 +22,6 @@ services:
       - --providers.file.watch=true
       - --entrypoints.web.address=:80
       - --entrypoints.web-proxy.address=:5300
-      - --entrypoints.web-ldaendpoint.address=:5400
       - --entrypoints.web-shlink.address=:443
       - --certificatesresolvers.mytlschallenge.acme.tlschallenge=true
       - --certificatesresolvers.mytlschallenge.acme.email=oliver.franke@limebit.de
@@ -62,33 +60,15 @@ services:
       - POSTGRES_DB=postgres
       - POSTGRES_PASSWORD=postgres
 
-  graphql:
-    container_name: od-graphql
-    image: docker.pkg.github.com/open-discourse/open-discourse/graphql:latest
-    environment:
-      - POSTGRES_DB_NAME=next
-      - POSTGRES_DB_USER=postgres
-      - POSTGRES_DB_PASSWORD=postgres
-      - POSTGRES_DB_HOST=database
-      - POSTGRES_DB_PORT=5432
-      - ENABLE_GRAPHIQL=true
-      - CORS_ORIGIN=http://67.207.79.172/
-    depends_on:
-      database:
-        condition: service_healthy
-    ports:
-      - "5000:5000"
-
   proxy:
     container_name: od-proxy
     image: docker.pkg.github.com/open-discourse/open-discourse/proxy:latest
     depends_on:
-      graphql:
-        condition: service_started
+      database:
+        condition: service_healthy
       persistent_database:
         condition: service_healthy
     environment:
-      - GRAPHQL_ENDPOINT=http://od-graphql:5000/graphql
       - CACHE_EXPIRATION=100000
       - QUERY_LIMIT=100
       - ACCESS_KEY=${ACCESS_KEY}
@@ -102,24 +82,6 @@ services:
       - "traefik.http.routers.proxy.rule=Host(`api.opendiscourse.de`)"
       - "traefik.http.routers.proxy.entrypoints=web-proxy"
       - "traefik.http.routers.proxy.tls.certresolver=mytlschallenge"
-
-  ldaendpoint:
-    container_name: od-ldaendpoint
-    image: docker.pkg.github.com/open-discourse/open-discourse/ldaendpoint:development
-    depends_on:
-      database:
-        condition: service_healthy
-    environment:
-      - POSTGRES_DB_NAME=next
-      - POSTGRES_DB_USER=postgres
-      - POSTGRES_DB_PASSWORD=postgres
-      - POSTGRES_DB_HOST=database
-      - POSTGRES_DB_PORT=5432
-    labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.ldaendpoint.rule=Host(`api.opendiscourse.de`)"
-      - "traefik.http.routers.ldaendpoint.entrypoints=web-ldaendpoint"
-      - "traefik.http.routers.ldaendpoint.tls.certresolver=mytlschallenge"
 
   shlink:
     container_name: od-shlink
