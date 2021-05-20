@@ -29,7 +29,7 @@ services:
 
   database:
     container_name: od-database
-    image: docker.pkg.github.com/open-discourse/open-discourse/database:development
+    image: docker.pkg.github.com/open-discourse/open-discourse/database:latest
     ports:
       - "5432:5432"
     healthcheck:
