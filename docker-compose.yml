@@ -4,6 +4,7 @@ services:
   traefik:
     container_name: od-traefik
     image: traefik:v2.3
+    restart: always
     ports:
       - "80:80"
       - "443:443"
@@ -30,6 +31,7 @@ services:
   database:
     container_name: od-database
     image: docker.pkg.github.com/open-discourse/open-discourse/database:latest
+    restart: always
     ports:
       - "5432:5432"
     healthcheck:
@@ -45,6 +47,7 @@ services:
   persistent_database:
     container_name: od-persistent-database
     image: postgres:12
+    restart: always
     ports:
       - "2345:5432"
     volumes:
@@ -63,6 +66,7 @@ services:
   proxy:
     container_name: od-proxy
     image: docker.pkg.github.com/open-discourse/open-discourse/proxy:latest
+    restart: always
     depends_on:
       database:
         condition: service_healthy
@@ -86,6 +90,7 @@ services:
   shlink:
     container_name: od-shlink
     image: shlinkio/shlink:stable
+    restart: always
     depends_on:
       persistent_database:
         condition: service_healthy
